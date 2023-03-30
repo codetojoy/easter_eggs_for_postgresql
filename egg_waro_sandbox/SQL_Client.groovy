@@ -20,12 +20,17 @@ def sql = Sql.newInstance(url, user, password, driver)
 // clean
 
 sql.execute("""
-DROP TABLE IF EXISTS strategy;
-DROP SEQUENCE IF EXISTS strategy_seq;
-
 DROP TABLE IF EXISTS player;
 DROP SEQUENCE IF EXISTS player_seq;
+
+DROP TABLE IF EXISTS strategy;
+DROP SEQUENCE IF EXISTS strategy_seq;
 """)
+
+/*
+SET REFERENTIAL_INTEGRITY FALSE;
+SET REFERENTIAL_INTEGRITY TRUE;
+*/
 
 // ----------------------------------
 // create
@@ -33,7 +38,7 @@ DROP SEQUENCE IF EXISTS player_seq;
 sql.execute("""
 CREATE TABLE strategy(
 id bigint NOT NULL,
-name VARCHAR(256) NOT NULL,
+name VARCHAR(256) NOT NULL UNIQUE,
 constraint pk_strategy primary key (id)
 );
 
@@ -41,11 +46,17 @@ CREATE sequence strategy_seq start with 5150;
 
 CREATE TABLE player(
 id bigint NOT NULL,
-username VARCHAR(256) NOT NULL,
+username VARCHAR(256) NOT NULL UNIQUE,
+strategy_id bigint NOT NULL,
 constraint pk_player primary key (id)
 );
 
 CREATE sequence player_seq start with 100;
+
+ALTER TABLE player
+    add constraint fk_player_strategy
+    foreign key (strategy_id)
+    REFERENCES strategy (id);
 """)
 
 // ----------------------------------
@@ -60,12 +71,15 @@ sql.execute insert, ['min_card']
 sql.execute insert, ['nearest_card']
 sql.execute insert, ['next_card']
 
-insert = " INSERT INTO player (id, username) VALUES (nextval('player_seq'),?); "
+insert = """
+INSERT INTO player (id, username, strategy_id)
+VALUES (nextval('player_seq'),?,(SELECT id from strategy where name = ?));
+"""
 
-sql.execute insert, ['Bach']
-sql.execute insert, ['Chopin']
-sql.execute insert, ['Mozart']
-sql.execute insert, ['Liszt']
+sql.execute insert, ['Bach', 'max_card']
+sql.execute insert, ['Chopin', 'min_card']
+sql.execute insert, ['Mozart', 'nearest_card']
+sql.execute insert, ['Liszt', 'next_card']
 
 // ----------------------------------
 // query
@@ -88,6 +102,7 @@ sql.eachRow("SELECT * FROM player") { row ->
 
     builder.append(" id: ${row.id}")
     builder.append(" username: ${row.username}")
+    builder.append(" strategy_id: ${row.strategy_id}")
 
     println builder.toString()
 }
