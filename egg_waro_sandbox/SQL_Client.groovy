@@ -23,6 +23,7 @@ sql.execute("""
 SET CONSTRAINTS ALL DEFERRED;
 
 DROP TABLE IF EXISTS config;
+DROP TABLE IF EXISTS player_stats;
 
 DROP TABLE IF EXISTS player;
 DROP SEQUENCE IF EXISTS player_seq;
@@ -124,13 +125,20 @@ sql.eachRow("SELECT * FROM strategy") { row ->
 
 println "\nplayer:"
 
-sql.eachRow("SELECT * FROM player") { row ->
+sql.eachRow(
+"""
+SELECT p.id, p.username, s.name, p.active, ps.num_total_wins, ps.num_total_games FROM player p
+JOIN strategy s ON p.strategy_id = s.id
+JOIN player_stats ps ON ps.player_id = p.id
+""") { row ->
     def builder = new StringBuilder()
 
     builder.append(" id: ${row.id}")
     builder.append(" username: ${row.username}")
-    builder.append(" strategy_id: ${row.strategy_id}")
+    builder.append(" strategy: ${row.name}")
     builder.append(" active: ${row.active}")
+    builder.append(" # wins: ${row.num_total_wins}")
+    builder.append(" # games: ${row.num_total_games}")
 
     println builder.toString()
 }
