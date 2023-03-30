@@ -20,22 +20,27 @@ def sql = Sql.newInstance(url, user, password, driver)
 // clean
 
 sql.execute("""
+SET CONSTRAINTS ALL DEFERRED;
+
+DROP TABLE IF EXISTS config;
+
 DROP TABLE IF EXISTS player;
 DROP SEQUENCE IF EXISTS player_seq;
 
 DROP TABLE IF EXISTS strategy;
 DROP SEQUENCE IF EXISTS strategy_seq;
-""")
 
-/*
-SET REFERENTIAL_INTEGRITY FALSE;
-SET REFERENTIAL_INTEGRITY TRUE;
-*/
+SET CONSTRAINTS ALL IMMEDIATE;
+""")
 
 // ----------------------------------
 // create
 
 sql.execute("""
+CREATE TABLE config(
+numCards bigint NOT NULL
+);
+
 CREATE TABLE strategy(
 id bigint NOT NULL,
 name VARCHAR(256) NOT NULL UNIQUE,
@@ -48,6 +53,7 @@ CREATE TABLE player(
 id bigint NOT NULL,
 username VARCHAR(256) NOT NULL UNIQUE,
 strategy_id bigint NOT NULL,
+active boolean,
 constraint pk_player primary key (id)
 );
 
@@ -72,14 +78,14 @@ sql.execute insert, ['nearest_card']
 sql.execute insert, ['next_card']
 
 insert = """
-INSERT INTO player (id, username, strategy_id)
-VALUES (nextval('player_seq'),?,(SELECT id from strategy where name = ?));
+INSERT INTO player (id, username, strategy_id, active)
+VALUES (nextval('player_seq'),?,(SELECT id from strategy where name = ?),?);
 """
 
-sql.execute insert, ['Bach', 'max_card']
-sql.execute insert, ['Chopin', 'min_card']
-sql.execute insert, ['Mozart', 'nearest_card']
-sql.execute insert, ['Liszt', 'next_card']
+sql.execute insert, ['Bach', 'max_card', true]
+sql.execute insert, ['Chopin', 'min_card', true]
+sql.execute insert, ['Mozart', 'nearest_card', true]
+sql.execute insert, ['Liszt', 'next_card', true]
 
 // ----------------------------------
 // query
@@ -103,6 +109,7 @@ sql.eachRow("SELECT * FROM player") { row ->
     builder.append(" id: ${row.id}")
     builder.append(" username: ${row.username}")
     builder.append(" strategy_id: ${row.strategy_id}")
+    builder.append(" active: ${row.active}")
 
     println builder.toString()
 }
