@@ -108,6 +108,60 @@ sql.eachRow("SELECT * FROM bar") { row ->
     println builder.toString()
 }
 
+def FORMAT = "%10s %10s %10s %10s %10s %10s\n"
+def builder
+
+println "\nequi join:"
+
+builder = new StringBuilder(String.format(FORMAT, 'f.id', 'f.name', 'f.colour', 'b.id', 'b.location', 'b.colour'))
+
+sql.eachRow("""
+SELECT
+f.id as fid, f.name, f.colour as fcol,
+b.id as bid, b.location, b.colour as bcol FROM foo f
+INNER JOIN bar b ON f.colour = b.colour
+ORDER BY fid ASC, bid ASC
+""") { row ->
+    def s = String.format(FORMAT, row.fid, row.name, row.fcol, row.bid, row.location, row.bcol)
+    builder.append(s)
+}
+
+println builder.toString()
+
+println "\nleft outer join:"
+
+builder = new StringBuilder(String.format(FORMAT, 'f.id', 'f.name', 'f.colour', 'b.id', 'b.location', 'b.colour'))
+
+sql.eachRow("""
+SELECT
+f.id as fid, f.name, f.colour as fcol,
+b.id as bid, b.location, b.colour as bcol FROM foo f
+LEFT OUTER JOIN bar b ON f.colour = b.colour
+ORDER BY fid ASC, bid ASC
+""") { row ->
+    def s = String.format(FORMAT, row.fid, row.name, row.fcol, row.bid, row.location, row.bcol)
+    builder.append(s)
+}
+
+println builder.toString()
+
+println "\nright outer join:"
+
+builder = new StringBuilder(String.format(FORMAT, 'f.id', 'f.name', 'f.colour', 'b.id', 'b.location', 'b.colour'))
+
+sql.eachRow("""
+SELECT
+f.id as fid, f.name, f.colour as fcol,
+b.id as bid, b.location, b.colour as bcol FROM foo f
+RIGHT OUTER JOIN bar b ON f.colour = b.colour
+ORDER BY fid ASC, bid ASC
+""") { row ->
+    def s = String.format(FORMAT, row.fid, row.name, row.fcol, row.bid, row.location, row.bcol)
+    builder.append(s)
+}
+
+println builder.toString()
+
 sql.close()
 println "Ready."
 
