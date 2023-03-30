@@ -63,6 +63,17 @@ ALTER TABLE player
     add constraint fk_player_strategy
     foreign key (strategy_id)
     REFERENCES strategy (id);
+
+CREATE TABLE player_stats(
+player_id bigint NOT NULL,
+num_total_games bigint NOT NULL,
+num_total_wins bigint NOT NULL
+);
+
+ALTER TABLE player_stats
+    add constraint fk_player_stats_player
+    foreign key (player_id)
+    REFERENCES player (id);
 """)
 
 // ----------------------------------
@@ -86,6 +97,16 @@ sql.execute insert, ['Bach', 'max_card', true]
 sql.execute insert, ['Chopin', 'min_card', true]
 sql.execute insert, ['Mozart', 'nearest_card', true]
 sql.execute insert, ['Liszt', 'next_card', true]
+
+insert = """
+INSERT INTO player_stats (player_id, num_total_games, num_total_wins)
+VALUES ((SELECT id from player where username = ?),?,?);
+"""
+
+sql.execute insert, ['Bach', 3, 0]
+sql.execute insert, ['Chopin', 4, 1]
+sql.execute insert, ['Mozart', 5, 0]
+sql.execute insert, ['Liszt', 6, 2]
 
 // ----------------------------------
 // query
