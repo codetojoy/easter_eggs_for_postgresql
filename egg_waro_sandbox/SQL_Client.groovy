@@ -16,38 +16,78 @@ def driver = "org.postgresql.Driver"
 
 def sql = Sql.newInstance(url, user, password, driver)
 
-sql.execute("DROP TABLE IF EXISTS player")
+// ----------------------------------
+// clean
 
 sql.execute("""
-CREATE TABLE player( player_id bigint NOT NULL,
-username VARCHAR(256) NOT NULL,
-strategy VARCHAR(256) NOT NULL,
-num_games integer,
-num_wins integer
+DROP TABLE IF EXISTS strategy;
+DROP SEQUENCE IF EXISTS strategy_seq;
+
+DROP TABLE IF EXISTS player;
+DROP SEQUENCE IF EXISTS player_seq;
+""")
+
+// ----------------------------------
+// create
+
+sql.execute("""
+CREATE TABLE strategy(
+id bigint NOT NULL,
+name VARCHAR(256) NOT NULL,
+constraint pk_strategy primary key (id)
 );
+
+CREATE sequence strategy_seq start with 5150;
+
+CREATE TABLE player(
+id bigint NOT NULL,
+username VARCHAR(256) NOT NULL,
+constraint pk_player primary key (id)
+);
+
+CREATE sequence player_seq start with 100;
 """)
 
 // ----------------------------------
 // populate
 
-def insert = " INSERT INTO player (player_id, username, strategy, num_games, num_wins) VALUES (?,?,?,?,?); "
+def insert = ""
 
-sql.execute insert, [11, 'Bach',   'max_card', 0, 0]
-sql.execute insert, [22, 'Chopin', 'min_card', 0,0]
-sql.execute insert, [33, 'Mozart', 'max_card', 0,0]
-sql.execute insert, [44, 'Liszt',  'random', 0,0]
+insert = " INSERT INTO strategy (id, name) VALUES (nextval('strategy_seq'),?); "
+
+sql.execute insert, ['max_card']
+sql.execute insert, ['min_card']
+sql.execute insert, ['nearest_card']
+sql.execute insert, ['next_card']
+
+insert = " INSERT INTO player (id, username) VALUES (nextval('player_seq'),?); "
+
+sql.execute insert, ['Bach']
+sql.execute insert, ['Chopin']
+sql.execute insert, ['Mozart']
+sql.execute insert, ['Liszt']
 
 // ----------------------------------
 // query
 
+println "\nstrategy:"
+
+sql.eachRow("SELECT * FROM strategy") { row ->
+    def builder = new StringBuilder()
+
+    builder.append(" id: ${row.id}")
+    builder.append(" name: ${row.name}")
+
+    println builder.toString()
+}
+
+println "\nplayer:"
+
 sql.eachRow("SELECT * FROM player") { row ->
     def builder = new StringBuilder()
 
-    builder.append(" player_id: ${row.player_id}")
+    builder.append(" id: ${row.id}")
     builder.append(" username: ${row.username}")
-    builder.append(" strategy: ${row.strategy}" )
-    builder.append(" num_games: ${row.num_games}" )
-    builder.append(" num_wins: ${row.num_wins}" )
 
     println builder.toString()
 }
