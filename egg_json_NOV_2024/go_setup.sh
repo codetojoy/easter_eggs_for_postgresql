@@ -9,7 +9,7 @@ echo "building ..."
 groovy SQL_Client.groovy 
 
 echo "populating ..."
-time groovy SQL_Populate.groovy 
+groovy SQL_Populate.groovy 
 
 echo "Ready."
 

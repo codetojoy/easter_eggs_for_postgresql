@@ -37,11 +37,35 @@ def myInsert(def sql, def id, def data) {
     sql.execute(insert, [id, name, data])
 }
 
+def buildJson() {
+    def info
+    def mode = 3
+
+    // see https://www.postgresql.org/docs/15/functions-json.html
+
+    if (mode == 1) {
+        info = [1,2,3,4,5]
+        // sql: select data->0 from nov_sandbox;
+        // sql: select data->-1 from nov_sandbox;
+    } else if (mode == 2) {
+        info = ["name": "Wolfgang Mozart"]
+        // sql: select data->'name' from nov_sandbox;
+        // NOTE: ->> converts to text
+    } else if (mode == 3) {
+        def p1 = ["name": "Wolfgang Mozart"]
+        def p2 = ["name": "Frederic Chopin"]
+        def p3 = ["name": "Johannes Brahms"]
+        info = [p1, p2, p3]
+        // sql: select data->'name' from nov_sandbox;
+        // NOTE: ->> converts to text
+    }
+
+    return JsonOutput.toJson(info)
+}
+
 def id
 
 id = 5150
-def info = [1,2,3,4]
-def json = JsonOutput.toJson(info)
-myInsert(sql, id++, json)
+myInsert(sql, id++, buildJson())
 
 sql.close()
