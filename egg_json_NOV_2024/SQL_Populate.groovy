@@ -39,7 +39,7 @@ def myInsert(def sql, def id, def data) {
 
 def buildJson() {
     def info
-    def mode = 3
+    def mode = 5
 
     // see https://www.postgresql.org/docs/15/functions-json.html
 
@@ -58,6 +58,18 @@ def buildJson() {
         info = [p1, p2, p3]
         // sql: select data->'name' from nov_sandbox;
         // NOTE: ->> converts to text
+    } else if (mode == 4) {
+        def p1 = ["name": "Wolfgang Mozart", works:["wm1","wm2","wm3"]]
+        def p2 = ["name": "Frederic Chopin", works:["fc1","fc2","fc3"]]
+        def p3 = ["name": "Johannes Brahms", works:["jb1","jb2","jb3"]]
+        info = [p1, p2, p3]
+        // sql: select data #> '{1, works, 0}' from nov_sandbox; 
+        // "fc1"
+    } else if (mode == 5) {
+        def p1 = ["name": "Wolfgang Mozart", works:["wm1","wm2","wm3"]]
+        info = p1
+        // sql: select data @> '{"name": "Wolfgang Mozart"}' from nov_sandbox;
+        // true 
     }
 
     return JsonOutput.toJson(info)
