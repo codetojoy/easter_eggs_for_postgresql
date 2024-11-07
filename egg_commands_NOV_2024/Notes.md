@@ -12,4 +12,6 @@ insert into test_index (name) select 'bob' from generate_series(1,1000000);
 insert into test_index (name) select 'alice' from generate_series(1,1000000);
 
 explain analyze select * from test_index where id = 2;
+
+create index idx_test_index_id on test_index (id);
 ```
