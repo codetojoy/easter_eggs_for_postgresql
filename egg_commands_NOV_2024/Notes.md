@@ -9,4 +9,7 @@ select * from pg_settings order by name;
 ```
 create table test_index (id serial, name text);
 insert into test_index (name) select 'bob' from generate_series(1,1000000);
+insert into test_index (name) select 'alice' from generate_series(1,1000000);
+
+explain analyze select * from test_index where id = 2;
 ```
