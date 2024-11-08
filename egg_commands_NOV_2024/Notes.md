@@ -42,4 +42,6 @@ with order_rows as (
 insert into items (item_no, order_no, product_name, description, created_on)
     select generate_series(1,4) item_no, order_no, 'p', repeat('desc', 20), now()
     from order_rows;
+
+create index idx_ord on items(order_no);
 ```
