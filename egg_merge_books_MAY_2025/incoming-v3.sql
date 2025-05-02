@@ -1,5 +1,6 @@
 
 TRUNCATE TABLE location_incoming;
+TRUNCATE TABLE book_incoming;
 
 INSERT INTO location_incoming (address, city, province)
 VALUES ('5150 Longworth Ave', 'Charlottetown', 'PE');
