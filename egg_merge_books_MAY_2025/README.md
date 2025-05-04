@@ -9,3 +9,8 @@
     * `chmod 744 my_setvars.sh`
     * `. ./my_setvars.sh`
 * see `go.sh` for full flow
+
+### TODO
+
+* add BookLocation to Groovy assertions
+* revisit step3
