@@ -11,3 +11,4 @@ CREATE TABLE book (
     updated_on TIMESTAMP DEFAULT current_timestamp
 );
 
+CREATE EXTENSION IF NOT EXISTS pgstattuple;

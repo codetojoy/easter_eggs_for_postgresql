@@ -11,7 +11,7 @@ import org.postgresql.*
 // ------------------------
 // main
 
-def text = new File("lorem-ipsum.txt").getText()
+def text = new File("lorem-ipsum.txt").getText().substring(0,20)
 
 def MY_DB = System.getenv("MY_DB")
 def PASSWORD = System.getenv("PGPASSWORD")
@@ -32,7 +32,7 @@ VALUES
 (:title, :author, :excerpt, :deleted)
 """) { ps ->                 
     def isDone = false
-    def max = 10_000 
+    def max = 50_000
     def count = 0
 
     while (!isDone) {
