@@ -62,6 +62,7 @@ WITH RECURSIVE series (list_num) AS
 SELECT list_num from series;
 
 -- e.g. 5.2
+-- see https://neon.tech/postgresql/postgresql-tutorial/postgresql-recursive-query
 
 CREATE TABLE items (
 	pk SERIAL PRIMARY KEY,
