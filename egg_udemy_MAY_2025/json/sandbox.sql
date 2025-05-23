@@ -36,6 +36,9 @@ CREATE INDEX IF NOT EXISTS idx_contacts_docs_body ON contacts_docs USING GIN(bod
 -- create index v2
 CREATE INDEX IF NOT EXISTS idx_contacts_docs_body_v2 ON contacts_docs USING GIN(body jsonb_path_ops);
 
+-- create index first_name
+CREATE INDEX IF NOT EXISTS idx_contacts_docs_body_v3 ON contacts_docs USING GIN((body->'first_name') jsonb_path_ops);
+
 -- size
 SELECT pg_size_pretty(pg_relation_size('idx_contacts_docs_body'::regclass)) as index_size
 SELECT pg_size_pretty(pg_relation_size('idx_contacts_docs_body_v2'::regclass)) as index_size
