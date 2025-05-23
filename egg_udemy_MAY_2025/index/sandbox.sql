@@ -36,3 +36,22 @@ EXPLAIN SELECT order_id FROM orders where order_id = 1;
 
 -- bitmap scan
 -- no example
+
+-- join nodes
+SHOW work_mem;
+
+-- hash join 1
+EXPLAIN SELECT * FROM orders NATURAL JOIN customers;
+
+-- hash join 2
+EXPLAIN SELECT * FROM orders ord
+JOIN customers c on c.customer_id = ord.customer_id;
+
+-- example query plan
+EXPLAIN SELECT company_name FROM suppliers
+ORDER BY company_name;
+
+-- example 2
+EXPLAIN (FORMAT JSON) SELECT company_name FROM suppliers
+ORDER BY company_name;
+
