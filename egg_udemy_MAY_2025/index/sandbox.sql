@@ -21,3 +21,18 @@ order by relname, indexrelname;
 
 select * from orders limit 10;
 select * from orders where order_date > timestamp '1996-07-03 00:00:00'
+
+-- nodes
+SELECT * FROM pg_am;
+
+-- seq scan
+EXPLAIN SELECT * FROM orders;
+
+-- index scan
+EXPLAIN SELECT * FROM orders where order_id = 1;
+
+-- index-only scan
+EXPLAIN SELECT order_id FROM orders where order_id = 1;
+
+-- bitmap scan
+-- no example
