@@ -55,3 +55,34 @@ ORDER BY company_name;
 EXPLAIN (FORMAT JSON) SELECT company_name FROM suppliers
 ORDER BY company_name;
 
+
+-- vid 269
+
+DROP TABLE IF EXISTS my_big_data ;
+CREATE TABLE IF NOT EXISTS my_big_data (id serial, name text);
+
+INSERT INTO my_big_data (name)
+SELECT 'Mozart-' || x FROM generate_series(1,2000000) as x;
+
+INSERT INTO my_big_data (name)
+SELECT 'Chopin-' || x FROM generate_series(1,2000000) as x;
+
+SELECT * from my_big_data where id = 12345;
+EXPLAIN SELECT * from my_big_data where id = 12345;
+
+SELECT COUNT(*) FROM my_big_data;
+EXPLAIN INSERT INTO my_big_data (name)
+SELECT 'Brahms-' || x FROM generate_series(1,200) as x;
+
+show max_parallel_workers_per_gather;
+
+-- num blocks
+select pg_relation_size('my_big_data') / 8192.0;
+show seq_page_cost;
+show cpu_tuple_cost;
+show cpu_operator_cost;
+
+-- vid 270
+
+select pg_size_pretty(pg_indexes_size('my_big_data'));
+select pg_size_pretty(pg_relation_size('my_big_data'));
