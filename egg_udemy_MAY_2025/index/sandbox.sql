@@ -107,3 +107,33 @@ EXPLAIN SELECT * FROM my_big_data WHERE id = 20 or id = 40;
 EXPLAIN SELECT * FROM my_big_data WHERE id IN (20,40);
 -- cost: 8.89
 EXPLAIN SELECT id FROM my_big_data WHERE id IN (20,40);
+
+-- vid 274
+
+EXPLAIN (analyze true, buffers true, timing true)
+SELECT * FROM my_big_data where id < 1000;
+
+-- vid 276
+
+SELECT * FROM my_big_data limit 10;
+SELECT pg_size_pretty(pg_indexes_size('my_big_data'))
+DROP INDEX IF EXISTS idx_my_big_data_name;
+CREATE INDEX IF NOT EXISTS idx_p_my_big_data_name ON my_big_data(name)
+WHERE name NOT LIKE '%-1%' 
+AND name NOT LIKE '%-2%'
+AND name NOT LIKE '%-3%'
+AND name NOT LIKE '%-4%'
+AND name NOT LIKE '%-5%'
+AND name NOT LIKE '%-6%'
+AND name NOT LIKE '%-7%'
+;
+EXPLAIN ANALYZE SELECT * from my_big_data where name = 'Mozart-1180';
+
+-- vid 278
+-- valid index
+SELECT oid, relname, relpages, reltuples,
+i.indisunique, i.indisclustered, i.indisvalid,
+pg_catalog.pg_get_indexdef(i.indexrelid, 0, true)
+FROM pg_class c
+JOIN pg_index i on i.indrelid = c.oid
+WHERE c.relname = 'my_big_data';
