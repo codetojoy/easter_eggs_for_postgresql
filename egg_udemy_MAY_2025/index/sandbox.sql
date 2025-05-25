@@ -59,6 +59,7 @@ ORDER BY company_name;
 -- vid 269
 
 DROP TABLE IF EXISTS my_big_data ;
+-- no index
 CREATE TABLE IF NOT EXISTS my_big_data (id serial, name text);
 
 INSERT INTO my_big_data (name)
@@ -86,3 +87,23 @@ show cpu_operator_cost;
 
 select pg_size_pretty(pg_indexes_size('my_big_data'));
 select pg_size_pretty(pg_relation_size('my_big_data'));
+
+CREATE INDEX IF NOT EXISTS idx_my_big_data_id on my_big_data(id);
+
+show max_parallel_maintenance_workers;
+
+EXPLAIN ANALYZE SELECT * from my_big_data where id = 12345;
+EXPLAIN ANALYZE SELECT id from my_big_data where id = 12345;
+
+-- vid 271
+
+EXPLAIN SELECT min(id) from my_big_data;
+EXPLAIN SELECT min(name) from my_big_data;
+
+-- vid 272
+-- cost: 16.85
+EXPLAIN SELECT * FROM my_big_data WHERE id = 20 or id = 40;
+-- cost: 12.89
+EXPLAIN SELECT * FROM my_big_data WHERE id IN (20,40);
+-- cost: 8.89
+EXPLAIN SELECT id FROM my_big_data WHERE id IN (20,40);
