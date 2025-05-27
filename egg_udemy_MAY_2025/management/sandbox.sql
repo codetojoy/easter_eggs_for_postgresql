@@ -20,3 +20,9 @@ UPDATE vacuum_sandbox set id = id + 1;
 
 -- vid 621
 -- auto vacuum
+
+SELECT relname, last_vacuum, last_autovacuum, 
+vacuum_count, autovacuum_count 
+last_analyze, last_autoanalyze
+FROM pg_stat_all_tables
+WHERE relname = 'vacuum_sandbox'
