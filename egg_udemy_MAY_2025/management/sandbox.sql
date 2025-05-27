@@ -21,8 +21,19 @@ UPDATE vacuum_sandbox set id = id + 1;
 -- vid 621
 -- auto vacuum
 
-SELECT relname, last_vacuum, last_autovacuum, 
-vacuum_count, autovacuum_count 
-last_analyze, last_autoanalyze
-FROM pg_stat_all_tables
-WHERE relname = 'vacuum_sandbox'
+	SELECT relname, last_vacuum, last_autovacuum, 
+	vacuum_count, autovacuum_count 
+	last_analyze, last_autoanalyze
+	FROM pg_stat_all_tables
+	WHERE relname = 'vacuum_sandbox'
+
+SHOW autovacuum;
+SHOW autovacuum_naptime;
+SHOW autovacuum_vacuum_threshold;
+SHOW autovacuum_vacuum_scale_factor;
+
+-- vid 622
+
+-- before size: 85xx K
+-- after size: 42xx K
+VACUUM FULL vacuum_sandbox;
