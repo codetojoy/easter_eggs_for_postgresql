@@ -1,0 +1,4 @@
+
+
+VACUUM FULL book;
+

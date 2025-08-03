@@ -1,5 +1,5 @@
 
-### Summary (Python3)
+### Setup Summary (Python3)
 
 * created db in RDS per video
     * follow instructions
@@ -13,6 +13,16 @@ python3 -m pip install psycopg2-binary
 ```
 * security group for database
     * CIDR with "What's my IP" worked
+* pgAdmin4 worked fine
+
+### Notes
+
+* see `setup.sql` for extensions
+* `pg_repack` and `pgstattuple` are available but not installed by default
+
+### vacuum
+
+* see `./vacuum` for vacuum and pg_repack
 
 ### Resources
 
