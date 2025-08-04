@@ -2,6 +2,7 @@
 ### Resources
 
 * good notes [here](https://aws.amazon.com/blogs/database/remove-bloat-from-amazon-aurora-and-rds-for-postgresql-with-pg_repack/)
+* highly validating [video here](https://www.youtube.com/watch?v=PR4yjtve0DU)
 * including: how to get version of `pg_repack` from AWS RDS
 
 ### Setup
